@@ -1,0 +1,111 @@
+<% include ../common/header %>
+<% include ../common/navbar %>
+<div class="container col-sm-12">
+	<div class="well">
+		 <div class="panel panel-primary ">
+			<div class="panel-heading text-center" style="text-align:left;"><h3>Add a new UOM</h3></div>
+			<div class="panel-body">
+
+				 <form class="form-horizontal col-sm-12" role="form" id="addnewmgrdataFrm">
+
+					<p  style="text-align:left;">Fill up the necessary details and press "Submit" to save the entry.&nbsp;
+					<span class="label label-danger">*</span> marked fields are manadatory fields</p>
+
+					<div class="form-group">
+					  <label for="pmpProjtId" class="control-label col-sm-2">PMP Project Id <span class="label label-danger">*</span></label>
+					  <div class="col-sm-4">
+							<input type="text" class="form-control" id="pmpProjtId" name="pmpProjtId" placeholder="PMP Project Id">
+					  </div>
+						<label for="acmgr" class="control-label col-sm-2" >Account Manager<span class="label label-danger">*</span></label>
+						<div class="col-sm-4">
+							<select class="form-control" id="acmgr" name="acmgr">
+							<% mgrTypeList.forEach(function(mgrType) { %>
+								<option value="<%= mgrType.code %>" ><%= mgrType.desc %></option>
+							<% }); %>
+							</select>
+						</div>
+					</div>
+          <div class="form-group">
+            <label for="uomName" class="control-label col-sm-2">UOM name<span class="label label-danger">*</span></label>
+            <div class="col-sm-4">
+            <input type="text" class="form-control" id="uomName" name="uomName" placeholder="UOM name">
+          	</div>
+						<label for="geo" class="control-label col-sm-2">Geography<span class="label label-danger">*</span></label>
+						<div class="col-sm-4">
+						<select class="form-control" id="geo" name="geo">
+							<% mgrTypeList.forEach(function(mgrType) { %>
+								<option value="<%= mgrType.code %>" ><%= mgrType.desc %></option>
+							<% }); %>
+						</select>
+						</div>
+          </div>
+					<div class="form-group">
+						<label for="manageType" class="control-label col-sm-2">Intranet Id<span class="label label-danger">*</span></label>
+						<div class="col-sm-4">
+						<select  class="form-control" id="manageType" name="manageType" >
+							<option value="">AAA</option>
+						</select>
+						</div>
+						<label for="startDate" class="control-label col-sm-2">UOM start date<span class="label label-danger">*</span></label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" id="startDate" name="startDate" placeholder="UOM start date">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="uomMgr" class="control-label col-sm-2">UOM manager<span class="label label-danger">*</span></label>
+						<div class="col-sm-4">
+						<select  class="form-control" id="uomMgr" name="uomMgr" >
+							<option value="">AAA</option>
+						</select>
+						</div>
+						<label for="progMgr" class="control-label col-sm-2">Program manager<span class="label label-danger">*</span></label>
+						<div class="col-sm-4">
+						<select  class="form-control" id="progMgr" name="progMgr" >
+							<option value="">AAA</option>
+						</select>
+						</div>
+					</div>
+          <div class="col-sm-offset-5 col-sm-6">
+            <button type="button" class="btn btn-lg btn-primary" onclick="onSubmit();">Add UOM</button>
+						<a href="/admin/home" class="btn  btn-lg btn-info" role="button">Cancel</a>
+          </div>
+
+					</form>
+			</div>
+		 </div>
+		</div>
+</div>
+
+<% include ../common/trxndialog %>
+
+<script>
+function onSubmit()
+{
+	console.log("Submit pressed");
+	//Going to make an ajax call
+
+	$.post( "/admin/saveNewUOMData", $( "#addnewmgrdataFrm" ).serialize() )
+  .done(function( data ) {
+			console.log("Received response "+ data);
+			if(data.status === 0 )
+			{
+				//Save is successful
+				console.log("Transaction status : "+data.desc);
+
+				$("#trxnModalTxt").text("Save successful");
+				$("#trxnStatusModal").modal('show');
+			}
+			else {
+				$("#trxnModalTxt").text(data.desc);
+				$("#trxnStatusModal").modal('show');
+			}
+  }).fail(function(error){
+		console.log("Error occured "+ error);
+		$("#trxnModalTxt").text("Error in connecting server ");
+		$("trxnStatusModal").modal('show');
+	});
+
+
+}
+</script>
+<% include ../common/footer %>

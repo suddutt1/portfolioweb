@@ -1,0 +1,85 @@
+<% include ../common/dtheader %>
+<% include ../common/navbar %>
+<div class="container col-sm-12">
+	<div class="well">
+		 <div class="panel panel-primary ">
+			<div class="panel-heading text-center" style="text-align:left;"><h3>Add new reference data</h3></div>
+			<div class="panel-body">
+				<div class="row">
+				 <form class="form-horizontal col-sm-6" role="form" id="addnewrefdataFrm">
+					<p  style="text-align:left;">Select reference data type and click View</p>
+
+					<div class="form-group">
+					  <label for="refDataType" class="control-label col-sm-1">Select</label>
+					  <div class="col-sm-6">
+						  <select class="form-control" id="refDataType" name="refDataType">
+							<% refDataList.forEach(function(refData) { %>
+								<option value="<%= refData.code %>" ><%= refData.desc %></option>
+							<% }); %>
+						  </select>
+					  </div>
+						<div class="col-sm-2">
+								  <button type="button" class="btn btn-md btn-primary" onclick="onSubmit();">View</button>
+						</div>
+					</div>
+          </form>
+				</div>
+				<table id="refDataTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+			    <thead>
+			        <tr>
+			            <th>Type</th>
+			            <th>Code</th>
+			            <th>Display value</th>
+
+			        </tr>
+			    </thead>
+				</table>
+					<div class="col-sm-2">
+						<a href="/admin/home" class="btn  btn-lg btn-info" role="button">Cancel</a>
+					</div>
+			</div>
+		 </div>
+		</div>
+</div>
+
+<% include ../common/trxndialog %>
+
+<script>
+
+var dataTable;
+$(document).ready(function(){
+	dataTable = $('#refDataTable').DataTable( {
+		dom : 'Bfrtip',
+						buttons: [
+
+		        'copy', 'csv','excel'
+
+		    ],
+		"searching": false,
+		"pagingType": "simple",
+		"processing": true,
+        "serverSide": true,
+        "lengthChange": false,
+        "infoCallback": function( settings, start, end, max, total, pre ) {
+    			return "&nbsp;";
+  		},
+        "ajax": {
+            "url": "/admin/getRefData",
+            "data": function ( d ) {
+                d.refDataType = $("#refDataType").val();
+            }
+		}
+		,
+		"columns": [
+            { "data": "type" },
+            { "data": "code" },
+            { "data": "displayValue" }
+        ]
+        });
+
+});
+function onSubmit()
+{
+}
+</script>
+<% include ../common/footer %>

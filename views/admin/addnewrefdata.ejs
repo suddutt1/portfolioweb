@@ -1,0 +1,79 @@
+<% include ../common/header %>
+<% include ../common/navbar %>
+<div class="container col-sm-12">
+	<div class="well">
+		 <div class="panel panel-primary ">
+			<div class="panel-heading text-center" style="text-align:left;"><h3>Add new reference data</h3></div>
+			<div class="panel-body">
+
+				 <form class="form-horizontal col-sm-6" role="form" id="addnewrefdataFrm">
+
+					<p  style="text-align:left;">Fill up the necessary details and press "Submit" to save the entry</p>
+					<p  style="text-align:left;"><span class="label label-danger">*</span> marked fields are manadatory fields</p>
+
+					<div class="form-group">
+					  <label for="refDataType" class="control-label col-sm-3">Select reference data type <span class="label label-danger">*</span></label>
+					  <div class="col-sm-6">
+						  <select class="form-control" id="refDataType" name="refDataType">
+							<% refDataList.forEach(function(refData) { %>
+								<option value="<%= refData.code %>" ><%= refData.desc %></option>
+							<% }); %>
+						  </select>
+					  </div>
+					</div>
+                    <div class="form-group">
+                      <label for="refDataCode" class="control-label col-sm-3" >Ref Data Code <span class="label label-danger">*</span></label>
+                      <div class="col-sm-6">
+                        <input type="text" class="form-control" id="refDataCode" name="refDataCode" placeholder="Ref Data Code">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="dispVal" class="control-label col-sm-3">Display value <span class="label label-danger">*</span></label>
+                      <div class="col-sm-6">
+                      <input type="text" class="form-control" id="dispVal" name="dispVal" placeholder="Display value">
+                    </div>
+                    </div>
+                    <div class="col-sm-offset-3 col-sm-6">
+                      <button type="button" class="btn btn-lg btn-primary" onclick="onSubmit();">Submit</button>
+											<a href="/admin/home" class="btn  btn-lg btn-info" role="button">Cancel</a>
+                    </div>
+                  </form>
+
+			</div>
+		 </div>
+		</div>
+</div>
+
+<% include ../common/trxndialog %>
+
+<script>
+function onSubmit()
+{
+	console.log("Submit pressed");
+	//Going to make an ajax call
+
+	$.post( "/admin/saveNewRefData", $( "#addnewrefdataFrm" ).serialize() )
+  .done(function( data ) {
+			console.log("Received response "+ data);
+			if(data.status === 0 )
+			{
+				//Save is successful
+				console.log("Transaction status : "+data.desc);
+
+				$("#trxnModalTxt").text("Save successful");
+				$("#trxnStatusModal").modal('show');
+			}
+			else {
+				$("#trxnModalTxt").text(data.desc);
+				$("#trxnStatusModal").modal('show');
+			}
+  }).fail(function(error){
+		console.log("Error occured "+ error);
+		$("#trxnModalTxt").text("Error in connecting server ");
+		$("trxnStatusModal").modal('show');
+	});
+
+
+}
+</script>
+<% include ../common/footer %>
